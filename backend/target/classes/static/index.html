@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopStream — Reactive Commerce Advisor Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.12);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+      color: var(--text);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .brand h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .strategy-toggle-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    /* KPI Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 20px;
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+    }
+
+    .stat-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .stat-val {
+      font-size: 30px;
+      font-weight: 800;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+    }
+
+    /* Section Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    @media (min-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-inventory-low {
+      background: var(--danger-bg);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-demand-spike {
+      background: var(--warning-bg);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-manual {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .badge-active {
+      background: var(--success-bg);
+      color: #34d399;
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .badge-out {
+      background: var(--danger-bg);
+      color: #f87171;
+    }
+
+    /* Product Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      padding: 12px 14px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--card-border);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .sku {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .stock-critical {
+      color: #f87171;
+      font-weight: 700;
+    }
+
+    .stock-warning {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .velocity-spike {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    /* Suggestions List */
+    .suggestion-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      transition: all 0.2s;
+    }
+
+    .suggestion-item:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(99, 102, 241, 0.04);
+    }
+
+    .sugg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .sugg-product {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .sugg-values {
+      display: flex;
+      gap: 16px;
+      margin: 12px 0;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .sugg-val-group span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-main);
+    }
+
+    .sugg-reasoning {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .sugg-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .confidence-meter {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .confidence-bar {
+      width: 70px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    /* Live Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1>ShopStream Commerce Advisor</h1>
+          <p>Autonomous Inventory Signals &bull; AI Dynamic Pricing &bull; Merchandising Approvals</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="strategy-toggle-card">
+          <span>Commerce Engine:</span>
+          <strong id="active-strategy-display" style="color: #818cf8;">AI</strong>
+          <button class="btn btn-secondary btn-sm" onclick="toggleStrategy()">Switch to <span id="strategy-switch-target">Rule-Based</span></button>
+        </div>
+        <button class="btn btn-primary" onclick="loadAllData()">
+          <span>↻</span> Refresh Loop
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI Summary Row -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Catalog SKUs</div>
+        <div class="stat-val" id="stat-skus">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Pending Reviews</div>
+        <div class="stat-val" style="color: #fbbf24;" id="stat-pending">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Low Stock Alerts</div>
+        <div class="stat-val" style="color: #f87171;" id="stat-low-stock">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Spike Trending Items</div>
+        <div class="stat-val" style="color: #a78bfa;" id="stat-spikes">0</div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="grid-2">
+      <!-- Left Column: Product Catalog & Demo Controls -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📦</span> Catalog & Inventory Signals
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <select id="filter-category" onchange="loadProducts()" style="background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--card-border); padding: 4px 8px; border-radius: 6px; font-size: 12px;">
+              <option value="">All Categories</option>
+              <option value="ELECTRONICS">Electronics</option>
+              <option value="APPAREL">Apparel</option>
+              <option value="HOME">Home</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Stock / Safety</th>
+                <th>24h Velocity</th>
+                <th>Status</th>
+                <th>Simulate Demo Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Column: Merchandising Decision Queue -->
+      <div>
+        <!-- Pricing Suggestions Queue -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🏷️</span> Pending Pricing Suggestions
+              <span id="badge-pricing-count" class="badge badge-pending">0</span>
+            </div>
+          </div>
+          <div id="pricing-suggestions-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Reorder Suggestions Queue -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🚚</span> Pending Replenishment Reorders
+              <span id="badge-reorder-count" class="badge badge-pending">0</span>
+            </div>
+          </div>
+          <div id="reorder-suggestions-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Signal dispatched</div>
+
+  <script>
+    const API_BASE = '';
+    let currentStrategy = 'AI';
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    async function loadEngineStrategy() {
+      try {
+        const res = await fetch(`${API_BASE}/engine/strategy`);
+        if (res.ok) {
+          const data = await res.json();
+          currentStrategy = data.activeStrategy || 'AI';
+          document.getElementById('active-strategy-display').innerText = currentStrategy;
+          document.getElementById('strategy-switch-target').innerText = currentStrategy === 'AI' ? 'Rule-Based' : 'AI';
+        }
+      } catch (err) {
+        console.error('Failed to load strategy', err);
+      }
+    }
+
+    async function toggleStrategy() {
+      const target = currentStrategy === 'AI' ? 'RULE_BASED' : 'AI';
+      try {
+        const res = await fetch(`${API_BASE}/engine/strategy?strategy=${target}`, { method: 'POST' });
+        if (res.ok) {
+          showToast(`Commerce Strategy switched to ${target}`);
+          await loadEngineStrategy();
+        }
+      } catch (err) {
+        showToast('Error switching strategy');
+      }
+    }
+
+    async function loadProducts() {
+      const cat = document.getElementById('filter-category').value;
+      let url = `${API_BASE}/products`;
+      if (cat) url += `?category=${cat}`;
+
+      try {
+        const res = await fetch(url);
+        const products = await res.json();
+        renderProducts(products);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderProducts(products) {
+      const tbody = document.getElementById('product-table-body');
+      tbody.innerHTML = '';
+
+      let lowStockCount = 0;
+      let spikeCount = 0;
+      let pendingCount = 0;
+
+      products.forEach(p => {
+        if (p.stockLevel <= p.reorderThreshold) lowStockCount++;
+        if (p.demandVelocity > 100) spikeCount++;
+        if (p.status === 'PRICE_REVIEW_PENDING') pendingCount++;
+
+        const isLow = p.stockLevel <= p.reorderThreshold;
+        const isSpike = p.demandVelocity > 100;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <div style="font-weight: 600;">${p.name}</div>
+            <div class="sku">${p.sku} &bull; ${p.category}</div>
+          </td>
+          <td style="font-family: var(--font-mono); font-weight: 600;">
+            $${Number(p.currentPrice).toFixed(2)}
+          </td>
+          <td>
+            <span class="${isLow ? 'stock-critical' : ''}">${p.stockLevel}</span>
+            <span style="color: var(--text-muted); font-size: 11px;"> / min ${p.reorderThreshold}</span>
+          </td>
+          <td>
+            <span class="${isSpike ? 'velocity-spike' : ''}">${p.demandVelocity} orders</span>
+          </td>
+          <td>
+            <span class="badge ${p.status === 'ACTIVE' ? 'badge-active' : (p.status === 'OUT_OF_STOCK' ? 'badge-out' : 'badge-pending')}">
+              ${p.status}
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="simulateOrder(${p.id})" title="Sell 1 unit and trigger agentic loop if threshold crossed">
+                ⚡ Sell 1
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="reduceStock(${p.id}, -5)" title="Reduce stock by 5">
+                📉 -5 Stock
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="suggestPricingManual(${p.id})" title="Request on-demand AI pricing review">
+                🎯 Review
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById('stat-skus').innerText = products.length;
+      document.getElementById('stat-low-stock').innerText = lowStockCount;
+      document.getElementById('stat-spikes').innerText = spikeCount;
+      document.getElementById('stat-pending').innerText = pendingCount;
+    }
+
+    async function loadSuggestions() {
+      try {
+        const [pricingRes, reorderRes] = await Promise.all([
+          fetch(`${API_BASE}/pricing-suggestions?status=PENDING`),
+          fetch(`${API_BASE}/reorder-suggestions?status=PENDING`)
+        ]);
+
+        const pricing = await pricingRes.json();
+        const reorder = await reorderRes.json();
+
+        renderPricingSuggestions(pricing);
+        renderReorderSuggestions(reorder);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function getTriggerBadge(reason) {
+      if (reason === 'INVENTORY_LOW') return '<span class="badge badge-inventory-low">⚠️ INVENTORY LOW</span>';
+      if (reason === 'DEMAND_SPIKE') return '<span class="badge badge-demand-spike">🔥 DEMAND SPIKE</span>';
+      return '<span class="badge badge-manual">👤 MANUAL</span>';
+    }
+
+    function renderPricingSuggestions(list) {
+      const container = document.getElementById('pricing-suggestions-list');
+      document.getElementById('badge-pricing-count').innerText = list.length;
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-state">No pending pricing recommendations. All catalog prices are optimal.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const diff = item.recommendedPrice - item.currentPrice;
+        const diffPercent = ((diff / item.currentPrice) * 100).toFixed(1);
+        const diffColor = diff > 0 ? '#34d399' : (diff < 0 ? '#f87171' : '#cbd5e1');
+
+        return `
+          <div class="suggestion-item">
+            <div class="sugg-header">
+              <div>
+                <div class="sugg-product">${item.product?.name || 'Product'}</div>
+                <div class="sku">${item.product?.sku || ''}</div>
+              </div>
+              <div>${getTriggerBadge(item.triggerReason)}</div>
+            </div>
+
+            <div class="sugg-values">
+              <div class="sugg-val-group">
+                <span>Current Price</span>
+                <strong>$${Number(item.currentPrice).toFixed(2)}</strong>
+              </div>
+              <div class="sugg-val-group" style="margin-left: auto; text-align: right;">
+                <span>AI Recommended</span>
+                <strong style="color: ${diffColor}; font-size: 15px;">
+                  $${Number(item.recommendedPrice).toFixed(2)} (${diff >= 0 ? '+' : ''}${diffPercent}%)
+                </strong>
+              </div>
+            </div>
+
+            <div class="sugg-reasoning">${item.reasoning}</div>
+
+            <div class="sugg-footer">
+              <div class="confidence-meter">
+                <span>Confidence: ${(item.confidence * 100).toFixed(0)}%</span>
+                <div class="confidence-bar">
+                  <div class="confidence-fill" style="width: ${(item.confidence * 100)}%;"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-success btn-sm" onclick="respondPricing(${item.id}, 'ACCEPTED')">✓ Accept & Apply</button>
+                <button class="btn btn-danger btn-sm" onclick="respondPricing(${item.id}, 'REJECTED')">✕ Reject</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderReorderSuggestions(list) {
+      const container = document.getElementById('reorder-suggestions-list');
+      document.getElementById('badge-reorder-count').innerText = list.length;
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-state">No replenishment alerts. Stock buffers are healthy.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(item => `
+        <div class="suggestion-item">
+          <div class="sugg-header">
+            <div>
+              <div class="sugg-product">${item.product?.name || 'Product'}</div>
+              <div class="sku">${item.product?.sku || ''}</div>
+            </div>
+            <div>${getTriggerBadge(item.triggerReason)}</div>
+          </div>
+
+          <div class="sugg-values">
+            <div class="sugg-val-group">
+              <span>Current Stock</span>
+              <strong style="color: #f87171;">${item.currentStock} units</strong>
+            </div>
+            <div class="sugg-val-group" style="margin-left: auto; text-align: right;">
+              <span>Suggested Reorder</span>
+              <strong style="color: #34d399; font-size: 15px;">+${item.recommendedQuantity} units</strong>
+            </div>
+          </div>
+
+          <div class="sugg-reasoning">${item.reasoning}</div>
+
+          <div class="sugg-footer">
+            <div class="confidence-meter">
+              <span>Confidence: ${(item.confidence * 100).toFixed(0)}%</span>
+              <div class="confidence-bar">
+                <div class="confidence-fill" style="width: ${(item.confidence * 100)}%;"></div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-success btn-sm" onclick="respondReorder(${item.id}, 'ACCEPTED')">✓ Approve PO (+${item.recommendedQuantity})</button>
+              <button class="btn btn-danger btn-sm" onclick="respondReorder(${item.id}, 'REJECTED')">✕ Reject</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* Actions */
+    async function simulateOrder(id) {
+      try {
+        const res = await fetch(`${API_BASE}/products/${id}/orders`, { method: 'POST' });
+        if (res.ok) {
+          showToast('Sale simulated! Stock decremented. Signals checked asynchronously.');
+          setTimeout(loadAllData, 500);
+        }
+      } catch (e) {
+        showToast('Error simulating order');
+      }
+    }
+
+    async function reduceStock(id, change) {
+      try {
+        const res = await fetch(`${API_BASE}/products/${id}/stock?quantityChange=${change}`, { method: 'PATCH' });
+        if (res.ok) {
+          showToast(`Stock updated by ${change}. Agentic loop evaluated.`);
+          setTimeout(loadAllData, 500);
+        }
+      } catch (e) {
+        showToast('Error updating stock');
+      }
+    }
+
+    async function suggestPricingManual(id) {
+      showToast('Generating AI pricing recommendation...');
+      try {
+        const res = await fetch(`${API_BASE}/products/${id}/suggest-pricing`, { method: 'POST' });
+        if (res.ok) {
+          showToast('New suggestion added to review queue!');
+          setTimeout(loadAllData, 400);
+        }
+      } catch (e) {
+        showToast('Error requesting suggestion');
+      }
+    }
+
+    async function respondPricing(id, status) {
+      try {
+        const res = await fetch(`${API_BASE}/pricing-suggestions/${id}?status=${status}`, { method: 'PATCH' });
+        if (res.ok) {
+          showToast(`Pricing recommendation ${status.toLowerCase()}!`);
+          setTimeout(loadAllData, 400);
+        }
+      } catch (e) {
+        showToast('Error updating pricing suggestion');
+      }
+    }
+
+    async function respondReorder(id, status) {
+      try {
+        const res = await fetch(`${API_BASE}/reorder-suggestions/${id}?status=${status}`, { method: 'PATCH' });
+        if (res.ok) {
+          showToast(`Reorder recommendation ${status.toLowerCase()}! Inbound units received.`);
+          setTimeout(loadAllData, 400);
+        }
+      } catch (e) {
+        showToast('Error updating reorder suggestion');
+      }
+    }
+
+    async function loadAllData() {
+      await Promise.all([loadProducts(), loadSuggestions(), loadEngineStrategy()]);
+    }
+
+    // Polling every 5 seconds for autonomous updates from agentic loop
+    setInterval(loadSuggestions, 5000);
+
+    // Initial load
+    window.addEventListener('DOMContentLoaded', loadAllData);
+  </script>
+</body>
+</html>

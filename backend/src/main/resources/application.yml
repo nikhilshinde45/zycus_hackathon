@@ -1,0 +1,61 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: shopstream-advisor
+  
+  # ===================================================================
+  # Database Configuration:
+  # 1. H2 (Active by default for zero-setup demo & local development)
+  # 2. PostgreSQL (To switch, comment out H2 and uncomment PostgreSQL)
+  # ===================================================================
+  datasource:
+    url: jdbc:h2:mem:shopstream;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  # --- PostgreSQL Configuration (Uncomment below to connect Postgres) ---
+  # datasource:
+  #   url: jdbc:postgresql://localhost:5432/shopstream
+  #   driverClassName: org.postgresql.Driver
+  #   username: postgres
+  #   password: your_postgres_password
+  # jpa:
+  #   database-platform: org.hibernate.dialect.PostgreSQLDialect
+  #   hibernate:
+  #     ddl-auto: update
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+cors:
+  allowed-origins: "http://localhost:5173,http://localhost:4200,http://localhost:3000,http://127.0.0.1:5173"
+
+# ===================================================================
+# ShopStream Commerce Engine & AI LLM Gateway Configuration
+# ===================================================================
+shopstream:
+  engine:
+    active-strategy: AI # "AI" or "RULE_BASED" (can be toggled at runtime via API)
+  ai:
+    # Set your LLM endpoint URL here:
+    endpoint-url: ${AI_ENDPOINT_URL:https://litellm-qc.zycus.net/v1/chat/completions}
+    # Bearer token for LLM API:
+    api-key: ${AI_API_KEY:sk-SfyNGxhcv7RnQKbZFWX2LQ}
+    # Model identifier
+    model: ${AI_MODEL:qwen-cursor}
+    # Custom headers
+    product-header: ${AI_PRODUCT_HEADER:PC1}
+    cookie-header: ${AI_COOKIE_HEADER:6bf6da0e46dc446bd58693d49c303e18=f3f865650f0f8f3b30731936b2eb5857}
+    # Request timeout in seconds
+    timeout-seconds: 15
+
